@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { VideoStatus } from '@prisma/client';
+import { VideoStatus } from 'src/generated/prisma';
+
 
 @Injectable()
 export class VideosService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async getCatalog(page = 1, limit = 10) {
     const skip = (page - 1) * limit;
