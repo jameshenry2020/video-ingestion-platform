@@ -38,12 +38,12 @@ export class AppConfig {
   @IsNotEmpty()
   r2SecretAccessKey: string;
 
-  @Value('R2_BUCKET_NAME', { default: 'production-media-upload-bucket' })
+  @Value('R2_BUCKET_NAME', { parse: (val) => val || 'production-media-upload-bucket', default: 'production-media-upload-bucket' })
   @IsString()
   @IsNotEmpty()
   r2BucketName: string;
 
-  @Value('R2_PUBLIC_URL', { default: 'http://localhost:3001' })
+  @Value('R2_PUBLIC_URL', { parse: (val) => val || 'http://localhost:3001', default: 'http://localhost:3001' })
   @IsString()
   @IsNotEmpty()
   r2PublicUrl: string;

@@ -27,6 +27,13 @@ export class R2Service {
     const secretAccessKey = config.r2SecretAccessKey;
     this.bucketName = config.r2BucketName;
 
+    console.log('R2 DIAGNOSTIC:', {
+      endpoint,
+      accessKeyId,
+      secretAccessKey: secretAccessKey ? '***' : undefined,
+      bucketName: this.bucketName,
+    });
+
     if (!endpoint || !accessKeyId || !secretAccessKey) {
       this.logger.warn(
         'R2 configuration variables (R2_ENDPOINT, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY) are missing in environment configuration.',
