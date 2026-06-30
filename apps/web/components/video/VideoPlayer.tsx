@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import Hls from 'hls.js';
+import { cn } from "@/lib/utils";
 
 interface VideoPlayerProps {
   src: string;
@@ -70,13 +71,13 @@ export function VideoPlayer({ src, poster, className }: VideoPlayerProps) {
   }, [src]);
 
   return (
-    <div className={`player-container ${className || ''}`}>
+    <div className={cn("relative w-full aspect-video bg-black rounded-xl overflow-hidden border border-border shadow-md", className)}>
       <video
         ref={videoRef}
         poster={poster}
         controls
         playsInline
-        className="video-player-element"
+        className="w-full h-full"
       />
     </div>
   );

@@ -52,12 +52,12 @@ export class FFmpegService {
         }
 
         resolve({
-          duration: format.duration ? parseFloat(format.duration) : 0,
+          duration: format.duration ? parseFloat(String(format.duration)) : 0,
           width: videoStream.width || 0,
           height: videoStream.height || 0,
           codec: videoStream.codec_name || 'unknown',
           fps: Math.round(fps * 100) / 100,
-          bitrate: format.bit_rate ? parseInt(format.bit_rate) : 0,
+          bitrate: format.bit_rate ? parseInt(String(format.bit_rate), 10) : 0,
         });
       });
     });

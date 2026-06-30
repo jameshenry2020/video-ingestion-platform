@@ -6,6 +6,9 @@ export type UploadStatus =
   | 'UPLOADING'
   | 'UPLOADED'
   | 'PROCESSING'
+  | 'EXTRACTING_METADATA'
+  | 'GENERATING_THUMBNAIL'
+  | 'GENERATING_HLS'
   | 'READY'
   | 'FAILED';
 

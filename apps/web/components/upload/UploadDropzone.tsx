@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useRef } from 'react';
-import { useUploadStore } from '../../stores/upload.store';
-import { UploadCloud } from 'lucide-react';
+import { useState, useRef } from "react";
+import { useUploadStore } from "@/stores/upload.store";
+import { UploadCloud } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function UploadDropzone() {
   const { setFile, setError } = useUploadStore();
@@ -12,9 +13,9 @@ export function UploadDropzone() {
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === 'dragenter' || e.type === 'dragover') {
+    if (e.type === "dragenter" || e.type === "dragover") {
       setDragActive(true);
-    } else if (e.type === 'dragleave') {
+    } else if (e.type === "dragleave") {
       setDragActive(false);
     }
   };
@@ -40,12 +41,12 @@ export function UploadDropzone() {
     // Limit: 20GB
     const MAX_SIZE = 20 * 1024 * 1024 * 1024;
     if (file.size > MAX_SIZE) {
-      setError('File is too large. Maximum allowed size is 20GB.');
+      setError("File is too large. Maximum allowed size is 20GB.");
       return;
     }
 
-    if (!file.type.startsWith('video/')) {
-      setError('Invalid file type. Please upload a valid video file.');
+    if (!file.type.startsWith("video/")) {
+      setError("Invalid file type. Please upload a valid video file.");
       return;
     }
 
@@ -58,12 +59,16 @@ export function UploadDropzone() {
 
   return (
     <div
-      className={`dropzone ${dragActive ? 'active' : ''}`}
       onDragEnter={handleDrag}
       onDragOver={handleDrag}
       onDragLeave={handleDrag}
       onDrop={handleDrop}
       onClick={onButtonClick}
+      className={`group flex flex-col items-center justify-center border-2 border-dashed rounded-2xl p-12 cursor-pointer transition-all duration-300 bg-card/10 select-none ${
+        dragActive
+          ? "border-primary bg-primary/5 scale-[0.99]"
+          : "border-border hover:border-primary/40 hover:bg-card/25"
+      }`}
     >
       <input
         ref={fileInputRef}
@@ -71,19 +76,27 @@ export function UploadDropzone() {
         multiple={false}
         onChange={handleChange}
         accept="video/*"
-        style={{ display: 'none' }}
+        className="hidden"
       />
-      <UploadCloud size={48} className="dropzone-icon" />
-      <h3 style={{ marginBottom: '8px', fontSize: '18px', fontWeight: 600 }}>
+      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-secondary/80 text-primary mb-5 group-hover:scale-110 group-hover:bg-primary/10 transition-all duration-300">
+        <UploadCloud className="h-8 w-8" />
+      </div>
+      <h3 className="text-lg font-bold text-foreground mb-1">
         Drag and drop your video file here
       </h3>
-      <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '16px' }}>
+      <p className="text-sm text-muted-foreground mb-6">
         or click to browse from files
       </p>
-      <button type="button" className="btn btn-secondary" style={{ pointerEvents: 'none' }}>
+      
+      <Button
+        type="button"
+        variant="secondary"
+        className="pointer-events-none group-hover:bg-secondary-hover transition-colors"
+      >
         Select File
-      </button>
-      <span style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '16px' }}>
+      </Button>
+      
+      <span className="text-xs text-muted-foreground mt-6 uppercase tracking-wider font-semibold">
         Supports files up to 20GB (MP4, WEBM, MOV)
       </span>
     </div>

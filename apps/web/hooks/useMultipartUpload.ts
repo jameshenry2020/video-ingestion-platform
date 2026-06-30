@@ -201,7 +201,7 @@ export function useMultipartUpload() {
             return;
           }
 
-          const partNumber = partsToUpload[partIndex++];
+          const partNumber = partsToUpload[partIndex++]!;
           activeUploads++;
 
           const task = uploadPart(partNumber)
@@ -243,7 +243,7 @@ export function useMultipartUpload() {
       if (err.message === 'Upload aborted') {
         setStatus('IDLE');
       } else {
-        this.logger?.error ? this.logger.error(err.message) : console.error(err);
+        console.error(err);
         setError(err.message || 'An error occurred during upload');
       }
     } finally {

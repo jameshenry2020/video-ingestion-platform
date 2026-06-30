@@ -15,7 +15,7 @@ import { AppConfig } from '../../config/app.config';
       inject: [AppConfig],
       useFactory: (config: AppConfig) => ({
         secret: config.jwtSecret,
-        signOptions: { expiresIn: config.jwtExpiry },
+        signOptions: { expiresIn: config.jwtExpiry as any },
       }),
     }),
   ],

@@ -37,8 +37,8 @@ export class R2Service {
       endpoint,
       region: 'auto',
       credentials: {
-        accessKeyId: accessKeyId || 'placeholder-access-key',
-        secretAccessKey: secretAccessKey || 'placeholder-secret-key',
+        accessKeyId: accessKeyId,
+        secretAccessKey: secretAccessKey,
       },
       forcePathStyle: true, // Required for Cloudflare R2
     });
@@ -117,11 +117,11 @@ export class R2Service {
   async listUploadedParts(objectKey: string, uploadId: string): Promise<{ PartNumber: number; ETag: string }[]> {
     try {
       const parts: { PartNumber: number; ETag: string }[] = [];
-      let partNumberMarker: number | undefined = undefined;
+      let partNumberMarker: string | undefined = undefined;
       let hasMore = true;
 
       while (hasMore) {
-        const command: any = new ListPartsCommand({
+        const command = new ListPartsCommand({
           Bucket: this.bucketName,
           Key: objectKey,
           UploadId: uploadId,
