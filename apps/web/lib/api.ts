@@ -8,14 +8,3 @@ export const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
-
-// Auto inject Bearer Token on requests
-api.interceptors.request.use((config) => {
-  if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('access_token');
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-  }
-  return config;
-});

@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { VideoStatus, UploadSessionStatus, Video, UploadSession } from '@prisma/client';
+import { VideoStatus, UploadSessionStatus, Video, UploadSession } from '../../generated/prisma';
 
 @Injectable()
 export class UploadsRepository {
   constructor(private prisma: PrismaService) {}
 
   async createVideoAndSession(data: {
-    ownerId: string;
     originalFileName: string;
     mimeType: string;
     fileSize: number;
@@ -19,7 +18,6 @@ export class UploadsRepository {
     return this.prisma.$transaction(async (tx) => {
       const video = await tx.video.create({
         data: {
-          ownerId: data.ownerId,
           originalFileName: data.originalFileName,
           mimeType: data.mimeType,
           fileSize: data.fileSize,

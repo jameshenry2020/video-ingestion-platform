@@ -3,8 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { StorageModule } from './modules/storage/storage.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { UsersModule } from './modules/users/users.module';
 import { UploadsModule } from './modules/uploads/uploads.module';
 import { VideosModule } from './modules/videos/videos.module';
 import { WebSocketModule } from './modules/websocket/websocket.module';
@@ -21,8 +19,6 @@ import { BullModule } from '@nestjs/bullmq';
     ConfigModule,
     PrismaModule,
     StorageModule,
-    AuthModule,
-    UsersModule,
     WebSocketModule,
     MediaModule,
     WorkersModule,

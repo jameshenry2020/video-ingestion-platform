@@ -26,21 +26,8 @@ enum UploadSessionStatus {
   EXPIRED
 }
 
-model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String // Hashed password
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  videos    Video[]
-
-  @@index([email])
-}
-
 model Video {
   id                 String               @id @default(uuid())
-  ownerId            String // Identifies user who uploaded
-  owner              User                 @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   title              String?
   description        String?
   status             VideoStatus          @default(INITIATED)
@@ -63,7 +50,6 @@ model Video {
   uploadSession      UploadSession?
   processingJobs     VideoProcessingJob[]
 
-  @@index([ownerId])
   @@index([status])
 }
 

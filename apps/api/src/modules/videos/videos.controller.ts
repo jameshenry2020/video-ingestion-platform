@@ -1,8 +1,6 @@
-import { Controller, Get, Param, Query, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Param, Query, ParseIntPipe } from '@nestjs/common';
 import { VideosService } from './videos.service';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
-@UseGuards(JwtAuthGuard)
 @Controller('videos')
 export class VideosController {
   constructor(private videosService: VideosService) {}

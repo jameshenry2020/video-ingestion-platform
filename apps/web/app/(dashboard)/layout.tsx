@@ -1,11 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import { useAuthStore } from "@/stores/auth.store";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Film, LogOut, Upload, Grid, User, Loader2 } from "lucide-react";
+import { Film, Upload, Grid } from "lucide-react";
 import Link from "next/link";
 
 export default function DashboardLayout({
@@ -13,39 +11,7 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
   const pathname = usePathname();
-  const { user, isAuthenticated, loading, checkAuth, logout } = useAuthStore();
-
-  useEffect(() => {
-    checkAuth().then((auth) => {
-      if (!auth) {
-        router.push("/login");
-      }
-    });
-  }, [router, checkAuth]);
-
-  const handleLogout = () => {
-    logout();
-    router.push("/login");
-  };
-
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-10 w-10 animate-spin text-primary" />
-          <span className="text-sm font-semibold tracking-wider text-muted-foreground">
-            Verifying session...
-          </span>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return null; // Avoid flashing dashboard content while redirecting
-  }
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -84,26 +50,6 @@ export default function DashboardLayout({
                 </Button>
               </Link>
             </nav>
-          </div>
-
-          {/* User actions */}
-          <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-secondary/50 max-w-[200px]">
-              <User className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-              <span className="text-xs font-medium text-muted-foreground truncate">
-                {user?.email}
-              </span>
-            </div>
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleLogout}
-              className="gap-2 text-xs font-semibold hover:border-destructive hover:bg-destructive/10 hover:text-destructive transition-colors"
-            >
-              <LogOut className="h-3.5 w-3.5" />
-              Sign Out
-            </Button>
           </div>
         </div>
       </header>

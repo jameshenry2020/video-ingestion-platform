@@ -29,7 +29,7 @@ export class UploadsService {
     @InjectQueue(VIDEO_QUEUE) private videoQueue: Queue,
   ) { }
 
-  async initiateUpload(ownerId: string, dto: InitiateUploadDto) {
+  async initiateUpload(dto: InitiateUploadDto) {
     // Validate mimeType is a video
     if (!dto.mimeType.startsWith('video/')) {
       throw new BadRequestException('Only video file uploads are supported');
@@ -50,7 +50,6 @@ export class UploadsService {
     expiresAt.setHours(expiresAt.getHours() + 24);
 
     const { video, session } = await this.repository.createVideoAndSession({
-      ownerId,
       originalFileName: dto.fileName,
       mimeType: dto.mimeType,
       fileSize: dto.fileSize,
@@ -68,14 +67,10 @@ export class UploadsService {
     };
   }
 
-  async generatePartUploadUrl(ownerId: string, dto: GeneratePartUrlDto) {
+  async generatePartUploadUrl(dto: GeneratePartUrlDto) {
     const session = await this.repository.findSessionByVideoId(dto.videoId);
     if (!session) {
       throw new NotFoundException('Upload session not found');
-    }
-
-    if (session.video.ownerId !== ownerId) {
-      throw new ForbiddenException('You do not own this video session');
     }
 
     if (session.status !== UploadSessionStatus.ACTIVE) {
@@ -94,14 +89,10 @@ export class UploadsService {
     return { url };
   }
 
-  async reportPartComplete(ownerId: string, videoId: string, partNumber: number) {
+  async reportPartComplete(videoId: string, partNumber: number) {
     const session = await this.repository.findSessionByVideoId(videoId);
     if (!session) {
       throw new NotFoundException('Upload session not found');
-    }
-
-    if (session.video.ownerId !== ownerId) {
-      throw new ForbiddenException('You do not own this video session');
     }
 
     if (session.status !== UploadSessionStatus.ACTIVE) {
@@ -122,14 +113,10 @@ export class UploadsService {
     };
   }
 
-  async completeUpload(ownerId: string, dto: CompleteUploadDto) {
+  async completeUpload(dto: CompleteUploadDto) {
     const session = await this.repository.findSessionByVideoId(dto.videoId);
     if (!session) {
       throw new NotFoundException('Upload session not found');
-    }
-
-    if (session.video.ownerId !== ownerId) {
-      throw new ForbiddenException('You do not own this video session');
     }
 
     if (session.status !== UploadSessionStatus.ACTIVE) {
@@ -165,14 +152,10 @@ export class UploadsService {
     return { success: true };
   }
 
-  async abortUpload(ownerId: string, dto: AbortUploadDto) {
+  async abortUpload(dto: AbortUploadDto) {
     const session = await this.repository.findSessionByVideoId(dto.videoId);
     if (!session) {
       throw new NotFoundException('Upload session not found');
-    }
-
-    if (session.video.ownerId !== ownerId) {
-      throw new ForbiddenException('You do not own this video session');
     }
 
     // Abort in R2
@@ -184,14 +167,10 @@ export class UploadsService {
     return { success: true };
   }
 
-  async getResumableInfo(ownerId: string, videoId: string) {
+  async getResumableInfo(videoId: string) {
     const session = await this.repository.findSessionByVideoId(videoId);
     if (!session) {
       throw new NotFoundException('Upload session not found');
-    }
-
-    if (session.video.ownerId !== ownerId) {
-      throw new ForbiddenException('You do not own this video session');
     }
 
     // Query Cloudflare R2 directly for list of successfully uploaded parts
