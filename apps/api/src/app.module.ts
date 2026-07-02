@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { StorageModule } from './modules/storage/storage.module';
 import { UploadsModule } from './modules/uploads/uploads.module';
@@ -8,15 +6,13 @@ import { VideosModule } from './modules/videos/videos.module';
 import { WebSocketModule } from './modules/websocket/websocket.module';
 import { MediaModule } from './modules/media/media.module';
 import { WorkersModule } from './modules/workers/workers.module';
-import { ConfigModule } from './config/config.module';
-import { AppConfig } from './config/app.config';
 import { ConfigifyModule } from '@itgorillaz/configify';
 import { BullModule } from '@nestjs/bullmq';
+import { AppConfiguration } from './config/app.config';
 
 @Module({
   imports: [
     ConfigifyModule.forRootAsync(), // Initialize configify mapping
-    ConfigModule,
     PrismaModule,
     StorageModule,
     WebSocketModule,
@@ -25,8 +21,8 @@ import { BullModule } from '@nestjs/bullmq';
     UploadsModule,
     VideosModule,
     BullModule.forRootAsync({
-      inject: [AppConfig],
-      useFactory: (config: AppConfig) => ({
+      inject: [AppConfiguration],
+      useFactory: (config: AppConfiguration) => ({
         connection: {
           host: config.redisHost,
           port: config.redisPort,
@@ -38,7 +34,5 @@ import { BullModule } from '@nestjs/bullmq';
       }),
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

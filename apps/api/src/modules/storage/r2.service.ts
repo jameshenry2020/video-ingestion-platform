@@ -10,7 +10,7 @@ import {
   ListPartsCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { AppConfig } from '../../config/app.config';
+import { AppConfiguration } from '../../config/app.config';
 import * as fs from 'fs';
 import { pipeline } from 'stream/promises';
 import { Readable } from 'stream';
@@ -21,7 +21,7 @@ export class R2Service {
   private s3Client: S3Client;
   private bucketName: string;
 
-  constructor(private config: AppConfig) {
+  constructor(private config: AppConfiguration) {
     const endpoint = config.r2Endpoint;
     const accessKeyId = config.r2AccessKeyId;
     const secretAccessKey = config.r2SecretAccessKey;

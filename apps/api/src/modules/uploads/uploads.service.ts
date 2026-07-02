@@ -16,7 +16,7 @@ import * as path from 'path';
 
 // Using crypto.randomUUID() from Node.js is native and doesn't require importing external packages! This is clean and robust.
 import { randomUUID } from 'crypto';
-import { UploadSessionStatus } from 'src/generated/prisma';
+import { UploadSessionStatus } from '../../../generated/prisma';
 
 @Injectable()
 export class UploadsService {

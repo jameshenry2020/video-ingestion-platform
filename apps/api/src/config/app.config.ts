@@ -1,12 +1,9 @@
-import { Configuration, Value } from '@itgorillaz/configify';
+import { Configuration, RequiredArgsConstructor, Value } from '@itgorillaz/configify';
 import { IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
 
 @Configuration()
-export class AppConfig {
-  @Value('DATABASE_URL')
-  @IsString()
-  @IsNotEmpty()
-  databaseUrl: string;
+export class AppConfiguration {
+
 
   @Value('PORT', { parse: (val) => parseInt(val, 10), default: 3001 })
   @IsNumber()
@@ -43,8 +40,23 @@ export class AppConfig {
   @IsNotEmpty()
   r2BucketName: string;
 
-  @Value('R2_PUBLIC_URL', { parse: (val) => val || 'http://localhost:3001', default: 'http://localhost:3001' })
+  @Value('R2_PUBLIC_URL')
   @IsString()
   @IsNotEmpty()
-  r2PublicUrl: string;
+  r2PublicUrl: string
+
+}
+
+@Configuration()
+@RequiredArgsConstructor()
+export class DatabaseConfiguration {
+  @Value('DATABASE_URL')
+  @IsString()
+  @IsNotEmpty()
+  databaseUrl: string;
+
+
+  constructor(config: Required<DatabaseConfiguration>) {
+    this.databaseUrl = config.databaseUrl;
+  }
 }

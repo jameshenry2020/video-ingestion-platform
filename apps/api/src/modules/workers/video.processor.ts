@@ -5,9 +5,9 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { R2Service } from '../storage/r2.service';
 import { FFmpegService, HlsResolution } from '../media/ffmpeg.service';
 import { ProcessingGateway } from '../websocket/processing.gateway';
-import { VideoStatus } from '@prisma/client';
+import { VideoStatus } from '../../../generated/prisma';
 import { VIDEO_QUEUE } from '../queues/queue.constants';
-import { AppConfig } from '../../config/app.config';
+import { AppConfiguration } from '../../config/app.config';
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -21,7 +21,7 @@ export class VideoProcessor extends WorkerHost {
     private r2Service: R2Service,
     private ffmpegService: FFmpegService,
     private gateway: ProcessingGateway,
-    private config: AppConfig,
+    private config: AppConfiguration,
   ) {
     super();
   }
@@ -52,7 +52,7 @@ export class VideoProcessor extends WorkerHost {
     });
 
     const tmpDir = path.join(process.cwd(), 'tmp', videoId);
-    
+
     try {
       // 0. Prepare local workspaces
       fs.mkdirSync(tmpDir, { recursive: true });
@@ -71,7 +71,7 @@ export class VideoProcessor extends WorkerHost {
       await this.updateProgress(videoId, dbJob.id, VideoStatus.EXTRACTING_METADATA, 10);
 
       const metadata = await this.ffmpegService.extractMetadata(localOriginalPath);
-      
+
       // Save metadata to database
       await this.prisma.video.update({
         where: { id: videoId },
@@ -95,7 +95,7 @@ export class VideoProcessor extends WorkerHost {
 
       const thumbnailKey = `videos/thumbnails/${videoId}/thumbnail.jpg`;
       await this.r2Service.uploadFile(localThumbnailPath, thumbnailKey, 'image/jpeg');
-      
+
       const publicUrl = this.config.r2PublicUrl;
       const thumbnailUrl = `${publicUrl}/${thumbnailKey}`;
 
@@ -138,7 +138,7 @@ export class VideoProcessor extends WorkerHost {
 
       for (let i = 0; i < targetResolutions.length; i++) {
         const resolution = targetResolutions[i];
-        
+
         await this.ffmpegService.transcodeToHls(
           localOriginalPath,
           hlsDir,
@@ -163,7 +163,7 @@ export class VideoProcessor extends WorkerHost {
 
       // 4. Complete Stage (100%)
       const playbackUrl = `${publicUrl}/videos/hls/${videoId}/master.m3u8`;
-      
+
       await this.prisma.video.update({
         where: { id: videoId },
         data: {
@@ -193,7 +193,7 @@ export class VideoProcessor extends WorkerHost {
       this.logger.log(`Finished processing job ${job.id} for video: ${videoId}`);
     } catch (error: any) {
       this.logger.error(`Error processing video ${videoId} in job ${job.id}: ${error.message}`, error.stack);
-      
+
       await this.prisma.video.update({
         where: { id: videoId },
         data: { status: VideoStatus.FAILED, processingProgress: 0 },
@@ -252,7 +252,7 @@ export class VideoProcessor extends WorkerHost {
     const walk = async (dir: string): Promise<string[]> => {
       let results: string[] = [];
       const list = fs.readdirSync(dir);
-      
+
       for (const file of list) {
         const filePath = path.join(dir, file);
         const stat = fs.statSync(filePath);
@@ -270,10 +270,10 @@ export class VideoProcessor extends WorkerHost {
     for (const file of files) {
       const relativePath = path.relative(localDir, file).replace(/\\/g, '/');
       const r2Key = `${r2Prefix}/${relativePath}`;
-      
+
       let contentType = 'application/octet-stream';
       const ext = path.extname(file).toLowerCase();
-      
+
       if (ext === '.m3u8') {
         contentType = 'application/x-mpegURL';
       } else if (ext === '.ts') {

@@ -14,7 +14,7 @@ lerna-debug.log*
 
 # OS
 .DS_Store
-
+.agents/
 # Tests
 /coverage
 /.nyc_output
@@ -56,3 +56,6 @@ pids
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 /generated/prisma
+/tmp
+debug-query.cjs
+debug-query.ts 

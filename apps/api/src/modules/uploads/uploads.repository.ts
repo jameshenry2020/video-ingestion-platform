@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { VideoStatus, UploadSessionStatus, Video, UploadSession } from '../../generated/prisma';
+import { VideoStatus, UploadSessionStatus, Video, UploadSession } from '../../../generated/prisma';
 
 @Injectable()
 export class UploadsRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async createVideoAndSession(data: {
     originalFileName: string;
